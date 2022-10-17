@@ -10,14 +10,18 @@ bool isValidStateCode(string stateCode) {
 	string test;
 	string states = "AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MA,MD,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY";
 
-	test += toupper(stateCode.at(0));
-	test += toupper(stateCode.at(1));
+	if (isalpha(states.at(1)) && isalpha(states.at(2))) {
+		test += toupper(stateCode.at(0));
+		test += toupper(stateCode.at(1));
 
-	if (states.find(test) != -1) {
-		//cout << test << " is a valid state code" << endl;
-		return true;
+		if (states.find(test) != -1) {
+			//cout << test << " is a valid state code" << endl;
+			return true;
+		} else {
+			//cout << test << " is not a valid state code" << endl;
+			return false;
+		}
 	} else {
-		//cout << test << " is not a valid state code" << endl;
 		return false;
 	}
 }
@@ -116,6 +120,7 @@ int countSeats(string pollData, char party, int& seatCount) {
 				if (toupper(pollData.at(i)) == party) {
 					for (int j = i-1; j > 1; j--) {
 						if (!isalpha(pollData.at(j))) {
+							//cout << "temp: " << temp << endl;
 							temp += pollData.at(j);
 						} else {
 							break;
@@ -138,7 +143,7 @@ int countSeats(string pollData, char party, int& seatCount) {
 
 
 int main() {
-	int seats = 0;
+	int seats = -999;
 	
 	//assert(isValidPollString("CT5D,NY9R16D1I,VT,ne3r00D"));
 	//assert(!isValidPollString("ZT5D,NY9R16D1I,VT,ne3r00D"));
