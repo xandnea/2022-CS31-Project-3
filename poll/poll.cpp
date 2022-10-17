@@ -10,20 +10,17 @@ bool isValidStateCode(string stateCode) {
 	string test;
 	string states = "AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MA,MD,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY";
 
-	if (isalpha(states.at(1)) && isalpha(states.at(2))) {
-		test += toupper(stateCode.at(0));
-		test += toupper(stateCode.at(1));
+	test += toupper(stateCode.at(0));
+	test += toupper(stateCode.at(1));
 
-		if (states.find(test) != -1) {
-			//cout << test << " is a valid state code" << endl;
-			return true;
-		} else {
-			//cout << test << " is not a valid state code" << endl;
-			return false;
-		}
-	} else {
-		return false;
+	if (states.find(test) != -1) {
+		//cout << test << " is a valid state code" << endl;
+		return true;
 	}
+	else {
+		//cout << test << " is not a valid state code" << endl;
+		return false;
+	}	
 }
 
 bool isValidPartyResult(string partyResult) {
