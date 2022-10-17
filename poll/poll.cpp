@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cctype>
+#include <cassert>
 #include <algorithm> // DON'T KNOW IF I CAN USE THIS LIBRARY
 
 using namespace std;
@@ -13,8 +14,10 @@ bool isValidStateCode(string stateCode) {
 	test += toupper(stateCode.at(1));
 
 	if (states.find(test) != -1) {
+		//cout << test << " is a valid state code" << endl;
 		return true;
 	} else {
+		//cout << test << " is not a valid state code" << endl;
 		return false;
 	}
 }
@@ -22,17 +25,21 @@ bool isValidStateCode(string stateCode) {
 bool isValidPartyResult(string partyResult) {
 	char party;
 	if (!isdigit(partyResult.at(0))) {
+		//cout << partyResult << " is not a valid party result (error 1)" << endl;
 		return false;
 	}
 	for (int i = 1; i < partyResult.length(); i++) {
 		if ((!isdigit(partyResult.at(i))) && (!isalpha(partyResult.at(i)))) {
+			//cout << partyResult << " is not a valid party result (error 2)" << endl;
 			return false;
 		} else {
 			if (isalpha(partyResult.at(i))) {
 				party = toupper(partyResult.at(i));
 				if ((party == 'D') || (party == 'R') || (party == 'I') || (party == 'L') || (party == 'G')) {
+					//cout << partyResult << " is a valid party result" << endl;
 					return true;
 				} else {
+					//cout << partyResult << " is not a valid party result (error 3)" << endl;
 					return false;
 				}
 			}
@@ -58,8 +65,10 @@ bool isValidStateForecast(string stateForecast) {
 		}
 	}
 	else {
+		//cout << stateForecast << " is not a valid state forecast" << endl;
 		return false;
 	}
+	//cout << stateForecast << " is a valid state forecast" << endl;
 	return true;
 }
 
@@ -68,6 +77,7 @@ bool isValidPollString(string pollData) {
 	int containsSpace(pollData.find(' '));
 
 	if (containsSpace != -1) {
+		//cout << pollData << " is not valid poll data (error 1)" << endl;
 		return false;
 	}
 
@@ -85,20 +95,23 @@ bool isValidPollString(string pollData) {
 				continue;
 			}
 			else {
-				cout << stateForecast << endl;
+				//cout << pollData << " is not valid poll data (error 2)" << endl;
 				return false;
 			}
 		}
 	}
 	return true;
+	//cout << pollData << " is valid poll data" << endl;
 }
 
 int countSeats(string pollData, char party, int& seatCount) {
+	//cout << "STARTING SEAT COUNT: " << seatCount << endl;
 	party = toupper(party);
 	string temp = "";
 
 	if (isValidPollString(pollData)) {
 		if (isalpha(party)) {
+			seatCount = 0;
 			for (int i = 0; i < pollData.length(); i++) {
 				if (toupper(pollData.at(i)) == party) {
 					for (int j = i-1; j > 1; j--) {
@@ -111,6 +124,7 @@ int countSeats(string pollData, char party, int& seatCount) {
 					reverse(temp.begin(), temp.end());
 					seatCount += stoi(temp);
 					temp = "";
+					//cout << "Current seat count for " << party << " is " << seatCount << endl;
 				}
 			}
 		} else {
@@ -119,12 +133,35 @@ int countSeats(string pollData, char party, int& seatCount) {
 	} else {
 		return 1;
 	}
-	return seatCount;
+	return 0; 
 }
 
 
 int main() {
 	int seats = 0;
+	
+	//assert(isValidPollString("CT5D,NY9R16D1I,VT,ne3r00D"));
+	//assert(!isValidPollString("ZT5D,NY9R16D1I,VT,ne3r00D"));
+	//int seats;
+	//seats = -999;    // so we can detect whether countSeats sets seats
+	//assert(countSeats("CT5D,NY9R16D1I,VT,ne3r00D", 'd', seats) == 0 && seats == 21);
+	//seats = -999;    // so we can detect whether countSeats changes seats
+	//assert(countSeats("CT5D,NY9R16D1I,VT,ne3r00D", '%', seats) == 2 && seats == -999);
+	//	
+	//cerr << "All tests succeeded" << endl;
+
+	string pollString;
+	char party;
+
+	cout << "Enter a poll string: ";
+	getline(cin, pollString);
+
+	cout << "Enter a party to count: ";
+	cin >> party;
+
+	cout << "Return code: " << countSeats(pollString, party, seats) << endl;
+	cout << "Number of seats for " << party << ": " << seats << endl;
+	// way to test any specific data through user input
 
 	/*cout << isValidStateCode("Ca") << endl;
 	cout << isValidStateCode("nY") << endl;
@@ -148,7 +185,8 @@ int main() {
 	// messed up with not having an if statement to catch any spaces
 	// forgot to initialize stateForecast before sending it over to isValidStateForecast, causing crashes
 
-	cout << countSeats("NY09R16D1I,Vt,NJ3d5r4D,KS4R", 'd', seats) << endl;
+	
+	/*cout << countSeats("NY09R16D1I,Vt,NJ3d5r4D,KS4R", 'd', seats) << endl;
 	seats = 0;
 	cout << countSeats("NY09R16D1I,Vt,NJ3d5r4D,KS4R", 'i', seats) << endl;
 	seats = 0;
@@ -168,7 +206,7 @@ int main() {
 	cout << countSeats("CT576D4r9l,CA3R", 'i', seats) << endl;
 	seats = 0;
 	cout << countSeats("CT576D4r9l,CA3R", 'D', seats) << endl;
-	seats = 0;
+	seats = 0;*/
 	// forgot to set it so that when reading the poll string, the code sets the character being read to uppercase
 
 }
