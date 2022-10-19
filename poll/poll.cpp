@@ -60,7 +60,13 @@ bool isValidStateForecast(string stateForecast) {
 		string temp;
 		for (int i = 2; i < stateForecast.length(); i++) {
 			if (!(isalpha(stateForecast.at(i)) && isdigit(stateForecast.at(i - 1)))) {
-				temp += stateForecast.at(i);
+				if (isalpha(stateForecast.at(i)) && isalpha(stateForecast.at(i - 1))) {
+					return false;
+				}
+				else {
+					temp += stateForecast.at(i);
+				}
+				
 			}
 			else {
 				temp += stateForecast.at(i);
@@ -155,7 +161,6 @@ int countSeats(string pollData, char party, int& seatCount) {
 
 
 int main() {
-	/*int seats = -999;*/
 
 	assert(isValidPollString("CT5D,NY9R16D1I,VT,ne3r00D"));
 	assert(!isValidPollString("ZT5D,NY9R16D1I,VT,ne3r00D"));
@@ -164,10 +169,13 @@ int main() {
 	assert(countSeats("CT5D,NY9R16D1I,VT,ne3r00D", 'd', seats) == 0 && seats == 21);
 	seats = -999;    // so we can detect whether countSeats changes seats
 	assert(countSeats("CT5D,ny9r16d1I,VT,ne3r00D", '%', seats) == 2 && seats == -999);
+	seats = -999;    // so we can detect whether countSeats changes seats
+	assert(countSeats("CT5D,ny9r16d1I,VT,ne3rR00D", 'r', seats) == 1 && seats == -999);
 		
 	cerr << "All tests succeeded" << endl;
 
-	/*string pollString;
+	/*int seats = -999;
+	string pollString;
 	char party;
 
 	cout << "Enter a poll string: ";
