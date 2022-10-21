@@ -1,3 +1,3 @@
 ﻿  poll.cpp
-C:\Users\xandn\source\repos\2022-CS31-Project-3\poll\poll.cpp(91,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\xandn\source\repos\2022-CS31-Project-3\poll\poll.cpp(95,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   poll.vcxproj -> C:\Users\xandn\source\repos\2022-CS31-Project-3\x64\Debug\poll.exe

@@ -59,21 +59,25 @@ bool isValidStateForecast(string stateForecast) {
 	if (isValidStateCode(stateForecast.substr(0, 2)) && (isalpha(lastChar) || lastChar == ',')) {
 		string temp;
 		for (int i = 2; i < stateForecast.length(); i++) {
-			if (!(isalpha(stateForecast.at(i)) && isdigit(stateForecast.at(i - 1)))) {
-				if (isalpha(stateForecast.at(i)) && isalpha(stateForecast.at(i - 1))) {
-					return false;
+			if (isalpha(stateForecast.at(i)) || isdigit(stateForecast.at(i)) || (stateForecast.at(i) == ',')) {
+				if (!(isalpha(stateForecast.at(i)) && isdigit(stateForecast.at(i - 1)))) {
+					if (isalpha(stateForecast.at(i)) && isalpha(stateForecast.at(i - 1))) {
+						return false;
+					}
+					else {
+						temp += stateForecast.at(i);
+					}
+
 				}
 				else {
 					temp += stateForecast.at(i);
+					if (isValidPartyResult(temp)) {
+						temp = "";
+						continue;
+					}
 				}
-				
-			}
-			else {
-				temp += stateForecast.at(i);
-				if (isValidPartyResult(temp)) {
-					temp = "";
-					continue;
-				}
+			} else {
+				return false;
 			}
 		}
 	}
