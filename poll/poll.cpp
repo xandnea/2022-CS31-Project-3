@@ -27,16 +27,24 @@ bool isValidStateCode(string stateCode) {
 // Does not allow multiple party inputs next to each other (ex. CT4RR20d3l)
 bool isValidPartyResult(string partyResult) {
 	char party;
-	if (!isdigit(partyResult.at(0))) {
+	int digits = 0;
+	if (!isdigit(partyResult.at(0))) { 
 		//cout << partyResult << " is not a valid party result (error 1)" << endl;
 		return false;
 	}
-	for (int i = 1; i < partyResult.length(); i++) {
+	for (int i = 0; i < partyResult.length(); i++) { // as long as each character is either a digit or alpha, it checks if the number and party is correct
 		if ((!isdigit(partyResult.at(i))) && (!isalpha(partyResult.at(i)))) {
 			//cout << partyResult << " is not a valid party result (error 2)" << endl;
 			return false;
 		}
 		else {
+			if (isdigit(partyResult.at(i))) {
+				digits++;
+				if (digits > 2) {
+					//cout << "TOO HIGH OF A NUMBER: " << digits << endl;
+					return false;
+				}
+			}
 			if (isalpha(partyResult.at(i))) {
 				party = toupper(partyResult.at(i));
 				if ((party == 'D') || (party == 'R') || (party == 'I') || (party == 'L') || (party == 'G')) {
@@ -56,18 +64,29 @@ bool isValidPartyResult(string partyResult) {
 // Checks above functions to determine if state code and individual party results are valid
 bool isValidStateForecast(string stateForecast) {
 	char lastChar = stateForecast.at(stateForecast.length() - 1);
-	if (isValidStateCode(stateForecast.substr(0, 2)) && (isalpha(lastChar) || lastChar == ',')) {
+	if (isValidStateCode(stateForecast.substr(0, 2)) && (isalpha(lastChar) || lastChar == ',')) { // if first 2 letters are a valid state code and the last char is alpha or comma
 		string temp;
-		for (int i = 2; i < stateForecast.length(); i++) {
-			if (!(isalpha(stateForecast.at(i)) && isdigit(stateForecast.at(i - 1)))) {
-				temp += stateForecast.at(i);
+		for (int i = 2; i < stateForecast.length(); i++) { // starting at the character after the state code, check if each party result is valid
+			if (isalpha(stateForecast.at(i)) || isdigit(stateForecast.at(i)) || (stateForecast.at(i) == ',')) { // checks for if any characters are something other than digit, alpha, or comma
+				if (!(isalpha(stateForecast.at(i)) && isdigit(stateForecast.at(i - 1)))) {
+					if (isalpha(stateForecast.at(i)) && isalpha(stateForecast.at(i - 1))) { // ensures 2 party characters can't be next to each other
+						return false;
+					}
+					else {
+						temp += stateForecast.at(i);
+					}
+
+				}
+				else {
+					temp += stateForecast.at(i);
+					if (isValidPartyResult(temp)) {
+						temp = "";
+						continue;
+					}
+				}
 			}
 			else {
-				temp += stateForecast.at(i);
-				if (isValidPartyResult(temp)) {
-					temp = "";
-					continue;
-				}
+				return false;
 			}
 		}
 	}
@@ -85,17 +104,17 @@ bool isValidPollString(string pollData) {
 	int containsSpace(pollData.find(' '));
 	int i = 0;
 
-	if (containsSpace != -1) {
+	if (containsSpace != -1) { // ensures there is no white spaces
 		//cout << pollData << " is not valid poll data (error 1)" << endl;
 		return false;
 	}
 
-	while (pollData.at(i) == ',') {
+	while (pollData.at(i) == ',') { // skipps over commas if they are at the beginning of a state forecast
 		i++;
 	}
 
-	for (i; i < pollData.length(); i++) {
-		if ((pollData.at(i) != ',') && (pollData.length() != (i + 1))) {
+	for (i; i < pollData.length(); i++) { // separates state forecasts to check them individually
+		if ((pollData.at(i) != ',') && (pollData.length() != (i + 1))) { 
 			stateForecast += pollData.at(i);
 		}
 		else {
@@ -125,8 +144,8 @@ int countSeats(string pollData, char party, int& seatCount) {
 	if (isValidPollString(pollData)) {
 		if (isalpha(party)) {
 			seatCount = 0;
-			for (int i = 0; i < pollData.length(); i++) {
-				if (toupper(pollData.at(i)) == party) {
+			for (int i = 0; i < pollData.length(); i++) { // counts seats by iterating backwards and creating strings of the results after passing the correct party
+				if (toupper(pollData.at(i)) == party) {   // then reverses the string, converts it to intiger, and adds it to seatCount
 					for (int j = i - 1; j > 1; j--) {
 						if (!isalpha(pollData.at(j))) {
 							//cout << "temp: " << temp << endl;
@@ -155,7 +174,6 @@ int countSeats(string pollData, char party, int& seatCount) {
 
 
 int main() {
-	/*int seats = -999;*/
 
 	assert(isValidPollString("CT5D,NY9R16D1I,VT,ne3r00D"));
 	assert(!isValidPollString("ZT5D,NY9R16D1I,VT,ne3r00D"));
@@ -167,7 +185,9 @@ int main() {
 		
 	cerr << "All tests succeeded" << endl;
 
-	/*string pollString;
+	/*int seats = -999;
+
+	string pollString;
 	char party;
 
 	cout << "Enter a poll string: ";
