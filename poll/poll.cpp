@@ -145,7 +145,7 @@ int countSeats(string pollData, char party, int& seatCount) {
 		if (isalpha(party)) {
 			seatCount = 0;
 			for (int i = 0; i < pollData.length(); i++) { // counts seats by iterating backwards and creating strings of the results after passing the correct party
-				if (toupper(pollData.at(i)) == party) {   // then reverses the string, converts it to intiger, and adds it to seatCount
+				if (toupper(pollData.at(i)) == party) {   // then reverses the string, converts it to integer, and adds it to seatCount
 					for (int j = i - 1; j > 1; j--) {
 						if (!isalpha(pollData.at(j))) {
 							//cout << "temp: " << temp << endl;
